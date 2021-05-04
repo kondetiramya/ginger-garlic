@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/src/gg-webapi/bin/Debug/net5.0
+/src/gg-webapi/obj
+/.vs
