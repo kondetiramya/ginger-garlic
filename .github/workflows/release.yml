@@ -73,7 +73,8 @@ jobs:
     runs-on: ubuntu-latest
     needs:
     - deploy-dev
-
+    outputs:
+        releaseId: ${{ steps.create-pre-release.outputs.id}}
     steps:
     - uses: actions/checkout@v2
       with:
@@ -134,7 +135,7 @@ jobs:
       id: changelog
       
     - name: Create pre-release
-      id: create_release
+      id: create-pre-release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -210,20 +211,10 @@ jobs:
         echo Pushing docker image with version: $VERSION
         docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
         
-    - name: Generate changelog
-      uses: scottbrenner/generate-changelog-action@master
-      id: changelog
-      
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Publish release
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: StuYarrow/publish-release@v1
       with:
-        tag_name: ${{ env.VERSION }}
-        release_name: Release V ${{ env.VERSION }}
-        draft: false
-        prerelease: false
-        body: |
-            ${{ steps.changelog.outputs.changelog }}
+        id: |
+            ${{ needs.deploy-staging.outputs.releaseId }}
