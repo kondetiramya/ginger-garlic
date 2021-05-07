@@ -135,6 +135,8 @@ jobs:
       id: changelog
       with:
         package-dir: ./package.json
+        from-tag: 0.2.0
+        to-tag: HEAD
       
     - name: Create pre-release
       id: create-pre-release
@@ -148,7 +150,6 @@ jobs:
         draft: true
         prerelease: false
         body: |
-            echo ${{ steps.changelog.outputs.changelog }}
             ${{ steps.changelog.outputs.changelog }}
   
   
