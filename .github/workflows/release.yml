@@ -67,9 +67,12 @@ jobs:
       run: |
         echo Pushing docker image with version: $VERSION
         docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
+  
   deploy-staging:
     environment: staging
     runs-on: ubuntu-latest
+    needs:
+    - deploy-dev
 
     steps:
     - uses: actions/checkout@v2
@@ -129,8 +132,6 @@ jobs:
     - name: Generate changelog
       uses: scottbrenner/generate-changelog-action@master
       id: changelog
-      with:
-        to-tag: HEAD
       
     - name: Create pre-release
       id: create_release
@@ -145,9 +146,14 @@ jobs:
         prerelease: true
         body: |
             ${{ steps.changelog.outputs.changelog }}
+  
+  
   deploy-prod:
     environment: prod
     runs-on: ubuntu-latest
+    needs:
+    - deploy-dev
+    - deploy-staging
 
     steps:
     - uses: actions/checkout@v2
@@ -207,8 +213,6 @@ jobs:
     - name: Generate changelog
       uses: scottbrenner/generate-changelog-action@master
       id: changelog
-      with:
-        to-tag: HEAD
       
     - name: Create release
       id: create_release
@@ -223,11 +227,3 @@ jobs:
         prerelease: false
         body: |
             ${{ steps.changelog.outputs.changelog }}
-        
-    - name: Publish release
-      uses: StuYarrow/publish-release@v1
-      env: 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        id: |
-            ${{ steps.create_release.outputs.id }}
