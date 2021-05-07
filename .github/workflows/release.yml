@@ -135,7 +135,6 @@ jobs:
       id: changelog
       with:
         package-dir: ./package.json
-        from-tag: 0.2.0
         to-tag: HEAD
       
     - name: Create pre-release
