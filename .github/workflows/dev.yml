@@ -1,4 +1,5 @@
-name: CI Pipeline
+name: Run on main
+environment: dev
 
 on:
   push:
