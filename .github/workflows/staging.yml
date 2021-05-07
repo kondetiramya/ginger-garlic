@@ -1,0 +1,89 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+env:
+  IMAGE_NAME: ginger-garlic
+  GHCR_ROOT: ghcr.io
+  GHCR: ghcr.io/kondetiramya
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --no-restore
+    
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    
+    - name: Install Gitversion
+      uses: gittools/actions/gitversion/setup@v0.9.9
+      with:
+        versionSpec: '5.x'
+    
+    - name: Generate Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.9
+      with:
+        useConfigFile: true
+        configFilePath: ./gitversion.yaml
+        updateAssemblyInfo: true
+    
+    - name: Login to GitHub Container Registry
+      env:
+        VERSION: steps.gitversion.outputs.nuGetVersionV2
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ env.GHCR_ROOT }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Build tagged docker image
+      env: 
+        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      run: |
+        echo Building docker image with version: $VERSION
+        docker build . --file Dockerfile -t "${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION"
+    
+    - name: Push tagged docker image to GHCR
+      env:
+        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      run: |
+        echo Pushing docker image with version: $VERSION
+        docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
+        
+    - name: Generate changelog
+      uses: scottbrenner/generate-changelog-action@master
+      id: changelog
+      with:
+        to-tag: HEAD
+      
+    - name: Create pre-release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      with:
+        tag_name: ${{ env.VERSION }}
+        release_name: Release V ${{ env.VERSION }}
+        draft: true
+        prerelease: true
+        body: |
+            ${{ steps.changelog.outputs.changelog }}
