@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace gg_webapi.Controllers
 {
@@ -32,7 +31,7 @@ namespace gg_webapi.Controllers
                 TemperatureC = 14
             },
         };
-        
+
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
@@ -46,7 +45,7 @@ namespace gg_webapi.Controllers
             return WeatherForecast.OrderBy(m => m.Date).ToList();
         }
         [HttpPost]
-        public IActionResult Post([FromBody]WeatherForecastInput input)
+        public IActionResult Post([FromBody] WeatherForecastInput input)
         {
             WeatherForecast.Add(new WeatherForecast { Date = DateTime.Now, TemperatureC = input.TemperatureC, Summary = input.Summary });
             return Ok("Added successfully");
@@ -61,6 +60,20 @@ namespace gg_webapi.Controllers
                 return Ok("First item deleted successfully");
             }
             return BadRequest();
+        }
+
+        [HttpPut(template: "{id}")]
+        public IActionResult Put(int id, WeatherForecastInput input)
+        {
+            int indexToRemoveAt = id - 1;
+            if (WeatherForecast.Count >= indexToRemoveAt)
+            {
+                var currentItem = WeatherForecast[indexToRemoveAt];
+                WeatherForecast.RemoveAt(indexToRemoveAt);
+                WeatherForecast.Add(new WeatherForecast { Date = currentItem.Date, Summary = input.Summary, TemperatureC = input.TemperatureC });
+                return Ok("Replaced successfully");
+            }
+            return BadRequest("invalid index");
         }
     }
 }
