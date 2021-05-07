@@ -15,19 +15,19 @@ namespace gg_webapi.Controllers
         {
             new WeatherForecast
             {
-                Date = DateTime.Now.AddDays(3),
+                Date = DateTime.Now.AddDays(-3),
                 Summary = "Freezing",
                 TemperatureC = -17
             },
             new WeatherForecast
             {
-                Date = DateTime.Now.AddDays(2),
+                Date = DateTime.Now.AddDays(-2),
                 Summary = "Chilly",
                 TemperatureC = 1
             },
             new WeatherForecast
             {
-                Date = DateTime.Now.AddDays(1),
+                Date = DateTime.Now.AddDays(-1),
                 Summary = "Cool",
                 TemperatureC = 14
             },
@@ -43,7 +43,7 @@ namespace gg_webapi.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            return WeatherForecast;
+            return WeatherForecast.OrderBy(m => m.Date).ToList();
         }
         [HttpPost]
         public IActionResult Post([FromBody]WeatherForecastInput input)
@@ -57,7 +57,7 @@ namespace gg_webapi.Controllers
         {
             if (WeatherForecast.Count > 0)
             {
-                WeatherForecast.RemoveAt(0);
+                WeatherForecast.OrderBy(m => m.Date).ToList().RemoveAt(0);
                 return Ok("First item deleted successfully");
             }
             return BadRequest();
