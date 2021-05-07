@@ -51,5 +51,16 @@ namespace gg_webapi.Controllers
             WeatherForecast.Add(new WeatherForecast { Date = DateTime.Now, TemperatureC = input.TemperatureC, Summary = input.Summary });
             return Ok("Added successfully");
         }
+
+        [HttpDelete]
+        public IActionResult DeleteFirst()
+        {
+            if (WeatherForecast.Count > 0)
+            {
+                WeatherForecast.RemoveAt(0);
+                return Ok("First item deleted successfully");
+            }
+            return BadRequest();
+        }
     }
 }
