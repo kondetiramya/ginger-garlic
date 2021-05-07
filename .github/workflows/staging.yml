@@ -1,4 +1,5 @@
-name: CI Pipeline
+name: Deploy to staging
+environment: staging
 
 on:
   push:
