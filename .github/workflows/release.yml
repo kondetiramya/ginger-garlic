@@ -144,8 +144,9 @@ jobs:
         tag_name: ${{ env.VERSION }}
         release_name: Release V ${{ env.VERSION }}
         draft: true
-        prerelease: true
+        prerelease: false
         body: |
+            echo ${{ steps.changelog.outputs.changelog }}
             ${{ steps.changelog.outputs.changelog }}
   
   
@@ -217,4 +218,5 @@ jobs:
       uses: StuYarrow/publish-release@v1
       with:
         id: |
+            echo Release id: ${{ needs.deploy-staging.outputs.releaseId }}
             ${{ needs.deploy-staging.outputs.releaseId }}
