@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Run on main
 
 on:
   push:
@@ -9,8 +9,8 @@ env:
   GHCR: ghcr.io/kondetiramya
 
 jobs:
-  build:
-
+  deploy-dev:
+    environment: dev
     runs-on: ubuntu-latest
 
     steps:

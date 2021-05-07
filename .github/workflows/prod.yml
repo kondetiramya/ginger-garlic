@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Deploy to Prod
 
 on:
   push:
@@ -9,8 +9,8 @@ env:
   GHCR: ghcr.io/kondetiramya
 
 jobs:
-  build:
-
+  deploy-prod:
+    environment: prod
     runs-on: ubuntu-latest
 
     steps:
