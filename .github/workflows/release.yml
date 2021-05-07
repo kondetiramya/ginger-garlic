@@ -131,8 +131,10 @@ jobs:
         docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
         
     - name: Generate changelog
-      uses: heinrichreimer/github-changelog-generator-action@v2.1.1
+      uses: scottbrenner/generate-changelog-action@master
       id: changelog
+      with:
+        package-dir: ./package.json
       
     - name: Create pre-release
       id: create-pre-release
