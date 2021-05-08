@@ -44,6 +44,13 @@ namespace gg_webapi.Controllers
         {
             return WeatherForecast.OrderBy(m => m.Date).ToList();
         }
+
+        [HttpGet("{id}")]
+        public WeatherForecast Get(int id)
+        {
+            return WeatherForecast.ElementAt(id - 1);
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody] WeatherForecastInput input)
         {
