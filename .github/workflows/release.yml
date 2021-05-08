@@ -130,12 +130,19 @@ jobs:
         echo Pushing docker image with version: $VERSION
         docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
         
+    - name: Get latest tag name
+      id: latest_tag
+      uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      
+        
     - name: Generate changelog
       uses: scottbrenner/generate-changelog-action@master
       id: changelog
       with:
         package-dir: ./package.json
+        from-tag: ${{ steps.latest_tag.options.tag }}
         to-tag: HEAD
+        exclude: ci,build,test,docs,chore
       
     - name: Create pre-release
       id: create-pre-release
