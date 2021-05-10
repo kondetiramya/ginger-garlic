@@ -13,11 +13,15 @@ namespace gg_webapi.Controllers
         [JsonPropertyName("Summary")]
         public string Summary { get; }
 
+        [JsonPropertyName("ZipCode")]
+        public string ZipCode { get; }
+
         [JsonConstructor]
-        public WeatherForecastInput(int temperatureC, string summary)
+        public WeatherForecastInput(int temperatureC, string summary, string zipCode)
         {
             TemperatureC = temperatureC;
             Summary = summary;
+            ZipCode = zipCode;
         }
     }
 }

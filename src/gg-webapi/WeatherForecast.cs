@@ -11,5 +11,6 @@ namespace gg_webapi
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
         public string Summary { get; set; }
+        public string ZipCode { get; set; }
     }
 }

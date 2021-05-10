@@ -16,19 +16,23 @@ namespace gg_webapi.Controllers
             {
                 Date = DateTime.Now.AddDays(-3),
                 Summary = "Freezing",
-                TemperatureC = -17
+                TemperatureC = -17,
+                ZipCode = "44011"
+                
             },
             new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(-2),
                 Summary = "Chilly",
-                TemperatureC = 1
+                TemperatureC = 1,
+                ZipCode = "44145"
             },
             new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(-1),
                 Summary = "Cool",
-                TemperatureC = 14
+                TemperatureC = 14,
+                ZipCode = "44011"
             },
         };
 
@@ -54,7 +58,7 @@ namespace gg_webapi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] WeatherForecastInput input)
         {
-            WeatherForecast.Add(new WeatherForecast { Date = DateTime.Now, TemperatureC = input.TemperatureC, Summary = input.Summary });
+            WeatherForecast.Add(new WeatherForecast { Date = DateTime.Now, TemperatureC = input.TemperatureC, Summary = input.Summary, ZipCode = input.ZipCode });
             return Ok("Added successfully");
         }
 
@@ -77,7 +81,7 @@ namespace gg_webapi.Controllers
             {
                 var currentItem = WeatherForecast[indexToRemoveAt];
                 WeatherForecast.RemoveAt(indexToRemoveAt);
-                WeatherForecast.Add(new WeatherForecast { Date = currentItem.Date, Summary = input.Summary, TemperatureC = input.TemperatureC });
+                WeatherForecast.Add(new WeatherForecast { Date = currentItem.Date, Summary = input.Summary, TemperatureC = input.TemperatureC, ZipCode = input.ZipCode });
                 return Ok("Replaced successfully");
             }
             return BadRequest("invalid index");
