@@ -1,0 +1,36 @@
+name: Run CI on Dependabot PRs
+on:
+  repository_dispatch:
+  types: [ci]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Add Reaction
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-id: ${{ github.event.client_payload.github.payload.comment.id }}
+        reaction-type: hooray
+    
+    - name: checkout code
+      uses: actions/checkout@v2
+      with:
+       fetch-depth: 0
+       
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --no-restore
+    
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+	
+	
