@@ -14,7 +14,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+    steps: 
     - name: skip ci
       if: ${{github.event.issue.pull_request && contains(github.event.head_commit.message, 'ci skip') }}
       run: |
@@ -22,7 +22,7 @@ jobs:
         exit 1
     
     - name: Run PR
-      if ${{github.event.issue.pull_request && contains(github.event.comment.body, '/ci'}}
+      if: ${{github.event.issue.pull_request && contains(github.event.comment.body, '/ci'}}
       run: |
         echo "Running the PR"
         exit 0
