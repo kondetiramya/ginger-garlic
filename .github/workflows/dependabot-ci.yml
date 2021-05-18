@@ -1,24 +1,15 @@
-name: Run CI on Dependabot PRs
+name: Run CI On dependabot
 on:
   repository_dispatch:
-   types: [ci]
-
+    types: [ci]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Add Reaction
-      uses: peter-evans/create-or-update-comment@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-id: ${{ github.event.client_payload.github.payload.comment.id }}
-        reaction-type: hooray
-    
     - name: checkout code
       uses: actions/checkout@v2
       with:
-       fetch-depth: 0
-       
+       fetch-depth: 0        
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -32,3 +23,12 @@ jobs:
     
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    
+    - name: Add reaction
+      if: ${{ success() }}
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+        comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+        reaction-type: hooray
