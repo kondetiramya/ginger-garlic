@@ -1,7 +1,7 @@
 name: Run CI On dependabot
 on:
   repository_dispatch:
-    types: [ci]
+    types: [ci-command]
 jobs:
   build:
     runs-on: ubuntu-latest
