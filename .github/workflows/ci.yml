@@ -12,7 +12,6 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     
     steps: 
@@ -27,7 +26,7 @@ jobs:
         COMMIT_FILTER: "skip-ci"
       run: |
         # Get last commit message
-        readonly local last_commit_log=$(git log -1 --pretty=format:"%s")[1]
+        readonly local last_commit_log=$(git log -2 --pretty=format:"%s")
         echo "last commit log: $last_commit_log"
 
         readonly local filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
