@@ -143,20 +143,35 @@ jobs:
         from-tag: ${{ steps.latest_tag.options.tag }}
         to-tag: HEAD
         exclude: ci,build,test,docs,chore
-      
+    
     - name: Create pre-release
       id: create-pre-release
-      uses: actions/create-release@v1
+      if: ${{ success() && env.isMain == 'true'}}
+      uses: ncipollo/release-action@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
       with:
-        tag_name: ${{ env.VERSION }}
-        release_name: Release V ${{ env.VERSION }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ env.VERSION }}
+        name: Release V ${{ env.VERSION }}
         draft: true
         prerelease: false
         body: |
             ${{ steps.changelog.outputs.changelog }}
+    # - name: Create pre-release
+      # id: create-pre-release
+      # if: ${{ success() && env.isMain == ''}}
+      # uses: actions/create-release@v1
+      # env:
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      # with:
+        # tag_name: ${{ env.VERSION }}
+        # release_name: Release V ${{ env.VERSION }}
+        # draft: true
+        # prerelease: false
+        # body: |
+            # ${{ steps.changelog.outputs.changelog }}
   
   
   deploy-prod:
@@ -222,9 +237,11 @@ jobs:
         docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
         
     - name: Publish release
+      if: ${{ success() && env.isMain == 'true'}}
       env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       uses: StuYarrow/publish-release@v1
       with:
         id: |
-            ${{ needs.deploy-staging.outputs.releaseId }}
+            #${{ needs.deploy-staging.outputs.releaseId }}
+            ${{ needs.deploy-staging.outputs.id }}
