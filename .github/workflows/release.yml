@@ -243,5 +243,4 @@ jobs:
       uses: StuYarrow/publish-release@v1
       with:
         id: |
-            #${{ needs.deploy-staging.outputs.releaseId }}
-            ${{ needs.deploy-staging.outputs.id }}
+            ${{ needs.deploy-staging.outputs.releaseId }}
