@@ -240,7 +240,6 @@ jobs:
       if: ${{ success() }}
       env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      uses: StuYarrow/publish-release@v1
+      uses: eregon/publish-release@v1
       with:
-        id: |
-            ${{ needs.deploy-staging.outputs.releaseId }}
+        release_id: ${{ needs.deploy-staging.outputs.releaseId }}
