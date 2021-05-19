@@ -146,7 +146,7 @@ jobs:
     
     - name: Create pre-release
       id: create-pre-release
-      if: ${{ success() && env.isMain == 'true'}}
+      if: ${{ success() }}
       uses: ncipollo/release-action@v1
       env:
         VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
@@ -237,11 +237,9 @@ jobs:
         docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
         
     - name: Publish release
-      if: ${{ success() && env.isMain == 'true'}}
+      if: ${{ success() }}
       env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      uses: StuYarrow/publish-release@v1
+      uses: eregon/publish-release@v1
       with:
-        id: |
-            #${{ needs.deploy-staging.outputs.releaseId }}
-            ${{ needs.deploy-staging.outputs.id }}
+        release_id: ${{ needs.deploy-staging.outputs.releaseId }}
