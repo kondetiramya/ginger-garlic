@@ -67,6 +67,21 @@ jobs:
       run: |
         echo Pushing docker image with version: $VERSION
         docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
+    
+    - name: Tag the commit
+      if: ${{ success() }}
+      env:
+        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      uses: actions/github-script@v3
+      with:
+        github-token: $ {{ secrets.GITHUB_TOKEN }}
+        script: |
+            github.git.createRef({
+            owner: context.repo.owner
+            repo: context.repo.repo
+            ref: "refs/tags/${VERSION}"
+            sha: context.sha
+            })        
   
   deploy-staging:
     environment: staging
