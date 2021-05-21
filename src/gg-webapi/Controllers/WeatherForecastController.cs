@@ -20,7 +20,6 @@ namespace gg_webapi.Controllers
                 ZipCode = "44011"
                 
             },
-
             new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(-2),
