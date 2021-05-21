@@ -86,7 +86,6 @@ namespace gg_webapi.Controllers
         public IActionResult Put(int id, WeatherForecastInput input)
         {
             int indexToRemoveAt = id - 1;
-
             if (WeatherForecast.Count >= indexToRemoveAt)
             {
                 var currentItem = WeatherForecast[indexToRemoveAt];
