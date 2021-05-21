@@ -84,7 +84,7 @@ jobs:
             
             try
             {
-              const getRefResponse = github.git.getRef(getRefRequest)
+              const getRefResponse = await github.git.getRef(getRefRequest)
               if (getRefResponse.status != 200)
               {            
                 const createRefRequest = {
@@ -93,7 +93,7 @@ jobs:
                     ref: "refs/tags/d${{ env.VERSION }}",
                     sha: context.sha
                 }
-                github.git.createRef(createRefRequest)        
+                await github.git.createRef(createRefRequest)        
               }  
             }catch(err)
             {
