@@ -75,18 +75,29 @@ jobs:
       uses: actions/github-script@v3
       with:
         script: |
-            const request = {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/d${{ env.VERSION }}",
-              sha: context.sha
+            #check if the tag exists
+            const getRefRequest = {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: "refs/tags/d${{env.VERSION}}"
             }
-            try
-            {
-                github.git.createRef(request)        
-            }catch(err){
-                core.setFailed('Request failed with error ${ err }')
-            }        
+            const getRefResponse = await github.git.getRef(getRefRequest)
+            
+            if (getRefResponse != 200)
+            {            
+                const createRefRequest = {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: "refs/tags/d${{ env.VERSION }}",
+                  sha: context.sha
+                }
+                try
+                {
+                    github.git.createRef(createRefRequest)        
+                }catch(err){
+                    core.setFailed('Request failed with error ${err}')
+                }
+            }  
   
   deploy-staging:
     environment: staging
@@ -194,17 +205,28 @@ jobs:
       uses: actions/github-script@v3
       with:
         script: |
-            const request = {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/s${{ env.VERSION }}",
-              sha: context.sha
+            #check if the tag exists
+            const getRefRequest = {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: "refs/tags/s${{env.VERSION}}"
             }
-            try
-            {
-                github.git.createRef(request)        
-            }catch(err){
-                core.setFailed('Request failed with error ${err}')
+            const getRefResponse = await github.git.getRef(getRefRequest)
+            
+            if (getRefResponse != 200)
+            {            
+                const createRefRequest = {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: "refs/tags/s${{ env.VERSION }}",
+                  sha: context.sha
+                }
+                try
+                {
+                    github.git.createRef(createRefRequest)        
+                }catch(err){
+                    core.setFailed('Request failed with error ${err}')
+                }
             }
   
   deploy-prod:
