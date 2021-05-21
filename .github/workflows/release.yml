@@ -81,7 +81,7 @@ jobs:
                 repo: context.repo.repo,
                 ref: "refs/tags/d${{env.VERSION}}"
             }
-            const getRefResponse = await github.git.getRef(getRefRequest)
+            const getRefResponse = github.git.getRef(getRefRequest)
             
             if (getRefResponse != 200)
             {            
