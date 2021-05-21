@@ -85,7 +85,7 @@ jobs:
             try
             {
               const getRefResponse = github.git.getRef(getRefRequest)
-              if (getRefResponse != 200)
+              if (getRefResponse.status != 200)
               {            
                 const createRefRequest = {
                     owner: context.repo.owner,
