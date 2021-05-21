@@ -81,7 +81,14 @@ jobs:
                 repo: context.repo.repo,
                 ref: "refs/tags/d${{env.VERSION}}"
             }
-            const getRefResponse = github.git.getRef(getRefRequest)
+            try
+            {
+              const getRefResponse = github.git.getRef(getRefRequest)              
+            }catch(err)
+            {
+              core.SetFailed('could not get tag')
+              core.info('Failed to retrieve tag')
+            }
             
             if (getRefResponse != 200)
             {            
