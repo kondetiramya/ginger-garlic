@@ -83,11 +83,9 @@ jobs:
             }
             try
             {
-              echo 'Retrieving tag'
               const getRefResponse = github.git.getRef(getRefRequest)              
             }catch(err)
             {
-              echo 'could not retrieve tag'
               core.SetFailed('could not get tag')
               core.info('Failed to retrieve tag')
             }
