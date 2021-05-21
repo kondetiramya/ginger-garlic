@@ -49,7 +49,7 @@ namespace gg_webapi.Controllers
             {
                 Date = DateTime.Now.AddDays(-5),
                 Summary = "Hot",
-                TemperatureC = 47,
+                TemperatureC = 49,
                 ZipCode = "44011"
             },
 
