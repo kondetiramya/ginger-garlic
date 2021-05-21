@@ -20,6 +20,7 @@ namespace gg_webapi.Controllers
                 ZipCode = "44011"
                 
             },
+
             new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(-2),
@@ -27,6 +28,7 @@ namespace gg_webapi.Controllers
                 TemperatureC = 1,
                 ZipCode = "44145"
             },
+
             new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(-1),
@@ -34,6 +36,7 @@ namespace gg_webapi.Controllers
                 TemperatureC = 14,
                 ZipCode = "44011"
             },
+
             new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(-4),
@@ -41,6 +44,7 @@ namespace gg_webapi.Controllers
                 TemperatureC = 45,
                 ZipCode = "44011"
             },
+
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
@@ -66,6 +70,7 @@ namespace gg_webapi.Controllers
         public IActionResult Post([FromBody] WeatherForecastInput input)
         {
             WeatherForecast.Add(new WeatherForecast { Date = DateTime.Now, TemperatureC = input.TemperatureC, Summary = input.Summary, ZipCode = input.ZipCode });
+
             return Ok("Added successfully");
         }
 
