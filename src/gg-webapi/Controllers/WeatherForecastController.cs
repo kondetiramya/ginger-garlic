@@ -78,7 +78,6 @@ namespace gg_webapi.Controllers
                 WeatherForecast.OrderBy(m => m.Date).ToList().RemoveAt(0);
                 return Ok("First item deleted successfully");
             }
-
             return BadRequest();
         }
 
