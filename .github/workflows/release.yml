@@ -83,12 +83,13 @@ jobs:
             }
             
             const getRefResponse = ''
+            const deleteRefResponse = ''
             try
             {
               getRefResponse = await github.git.getRef(getRefRequest)
             }catch(err)
             {
-                core.setFailed('Failed to get tag information ${err}')
+                core.info('Failed to get tag information ${err}')
             }
             if (getRefResponse.status == 200)
             {
@@ -99,25 +100,27 @@ jobs:
                     ref: "tags/d${{env.VERSION}}"
                 }
                 try{
-                    await github.git.deleteRef(deleteTagRequest)
+                    deleteRefResponse = await github.git.deleteRef(deleteTagRequest)
                 }catch(err)
                 {
                     core.info('Could not delete existing tag. Delete it manually and try again')
-                    core.setFailed('Error deleting tag ${err}')
                 }
             }
-            const createRefRequest = {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: "refs/tags/d${{ env.VERSION }}",
-                sha: context.sha
-            }
-            try{
-                await github.git.createRef(createRefRequest)        
-            }catch(err)
+            if(deleteRefResponse.status == 204)
             {
-              core.info('Failed to retrieve tag')
-            } 
+                const createRefRequest = {
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: "refs/tags/d${{ env.VERSION }}",
+                    sha: context.sha
+                }
+                try{
+                    await github.git.createRef(createRefRequest)        
+                }catch(err)
+                {
+                  core.info('Failed to retrieve tag')
+                }
+            }            
   
   deploy-staging:
     environment: staging
