@@ -82,7 +82,7 @@ jobs:
                 ref: "tags/d${{env.VERSION}}"
             }
             
-            const getRefResponse = ''
+            var getRefResponse = ''
             try
             {
               getRefResponse = await github.git.getRef(getRefRequest)
@@ -119,7 +119,7 @@ jobs:
                 core.info('Tag created successfully');
             }catch(err)
             {
-                core.info('Failed to create tag')
+                core.info(`Failed to create tag ${err}`)
             }            
   
   deploy-staging:
