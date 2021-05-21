@@ -85,7 +85,7 @@ jobs:
             {
                 github.git.createRef(request)        
             }catch(err){
-                core.setFailed("Request failed with error ${{ err }}")
+                core.setFailed('Request failed with error ${ err }')
             }        
   
   deploy-staging:
