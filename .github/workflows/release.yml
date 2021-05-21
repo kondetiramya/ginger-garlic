@@ -82,19 +82,38 @@ jobs:
                 ref: "tags/d${{env.VERSION}}"
             }
             
+            const getRefResponse
             try
             {
-              const getRefResponse = await github.git.getRef(getRefRequest)
-              if (getRefResponse.status != 200)
-              {            
-                const createRefRequest = {
+              getRefResponse = await github.git.getRef(getRefRequest)
+            }catch(err)
+            {
+                core.setFailed("Failed to get tag information ${err}")
+            }
+            if (getRefResponse.status == 200)
+            {
+                core.info('Tag already exists. Deleting existing tag')
+                const deleteTagRequest = {
                     owner: context.repo.owner,
                     repo: context.repo.repo,
-                    ref: "refs/tags/d${{ env.VERSION }}",
-                    sha: context.sha
+                    ref: "tags/d${{env.VERSION}}"
                 }
+                try{
+                    await github.git.deleteRef(deleteTagRequest)
+                }catch(err)
+                {
+                    core.info('Could not delete existing tag. Delete it manually and try again')
+                    core.setFailed('Error deleting tag ${err}')
+                }
+            }
+            const createRefRequest = {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: "refs/tags/d${{ env.VERSION }}",
+                sha: context.sha
+            }
+            try{
                 await github.git.createRef(createRefRequest)        
-              }  
             }catch(err)
             {
               core.info('Failed to retrieve tag')
