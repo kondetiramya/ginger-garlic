@@ -77,6 +77,7 @@ namespace gg_webapi.Controllers
                 WeatherForecast.OrderBy(m => m.Date).ToList().RemoveAt(0);
                 return Ok("First item deleted successfully");
             }
+
             return BadRequest();
         }
 
@@ -84,6 +85,7 @@ namespace gg_webapi.Controllers
         public IActionResult Put(int id, WeatherForecastInput input)
         {
             int indexToRemoveAt = id - 1;
+
             if (WeatherForecast.Count >= indexToRemoveAt)
             {
                 var currentItem = WeatherForecast[indexToRemoveAt];
@@ -91,6 +93,7 @@ namespace gg_webapi.Controllers
                 WeatherForecast.Add(new WeatherForecast { Date = currentItem.Date, Summary = input.Summary, TemperatureC = input.TemperatureC, ZipCode = input.ZipCode });
                 return Ok("Replaced successfully");
             }
+
             return BadRequest("invalid index");
         }
     }
