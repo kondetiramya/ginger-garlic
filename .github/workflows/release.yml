@@ -87,9 +87,10 @@ jobs:
             try
             {
               getRefResponse = await github.git.getRef(getRefRequest)
+              core.info('Tag found')
             }catch(err)
             {
-                core.info('Failed to get tag information ${err}')
+                core.info(`Could not find tag ${err}`)
             }
             if (getRefResponse.status == 200)
             {
@@ -108,6 +109,7 @@ jobs:
             }
             if(deleteRefResponse.status == 204)
             {
+                core.info('Tag not found. Creating a new tag')
                 const createRefRequest = {
                     owner: context.repo.owner,
                     repo: context.repo.repo,
@@ -116,9 +118,10 @@ jobs:
                 }
                 try{
                     await github.git.createRef(createRefRequest)        
+                    core.info('Tag created successfully');
                 }catch(err)
                 {
-                  core.info('Failed to retrieve tag')
+                  core.info('Failed to create tag')
                 }
             }            
   
