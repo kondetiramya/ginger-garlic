@@ -78,14 +78,14 @@ jobs:
             const request = {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/d${ env.VERSION }',
+              ref: "refs/tags/d${{ env.VERSION }}",
               sha: context.sha
             }
             try
             {
                 github.git.createRef(request)        
             }catch(err){
-                core.setFailed('Request failed with error ${err}')
+                core.setFailed('Request failed with error ${ err }')
             }        
   
   deploy-staging:
@@ -197,7 +197,7 @@ jobs:
             const request = {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/s${ env.VERSION }',
+              ref: "refs/tags/s${{ env.VERSION }}",
               sha: context.sha
             }
             try
@@ -276,6 +276,9 @@ jobs:
       # uses: eregon/publish-release@v1
       # with:
         # release_id: ${{ needs.deploy-staging.outputs.releaseId }}
+    - name: Get latest tag name
+      id: latest_tag
+      uses: "WyriHaximus/github-action-get-previous-tag@v1"
     
     - name: Generate changelog
       if: ${{ success() }}
