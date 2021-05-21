@@ -79,7 +79,7 @@ jobs:
             const getRefRequest = {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                ref: "d${{env.VERSION}}"
+                ref: "tags/d${{env.VERSION}}"
             }
             try
             {
