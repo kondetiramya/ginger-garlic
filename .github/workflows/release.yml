@@ -81,9 +81,20 @@ jobs:
                 repo: context.repo.repo,
                 ref: "tags/d${{env.VERSION}}"
             }
+            
             try
             {
-              const getRefResponse = github.git.getRef(getRefRequest)              
+              const getRefResponse = github.git.getRef(getRefRequest)
+              if (getRefResponse != 200)
+              {            
+                const createRefRequest = {
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: "refs/tags/d${{ env.VERSION }}",
+                    sha: context.sha
+                }
+                github.git.createRef(createRefRequest)        
+              }  
             }catch(err)
             {
               core.info('Failed to retrieve tag')
