@@ -45,6 +45,14 @@ namespace gg_webapi.Controllers
                 ZipCode = "44011"
             },
 
+            new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(-5),
+                Summary = "Hot",
+                TemperatureC = 47,
+                ZipCode = "44011"
+            },
+
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
