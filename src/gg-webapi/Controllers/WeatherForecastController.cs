@@ -94,7 +94,6 @@ namespace gg_webapi.Controllers
                 WeatherForecast.Add(new WeatherForecast { Date = currentItem.Date, Summary = input.Summary, TemperatureC = input.TemperatureC, ZipCode = input.ZipCode });
                 return Ok("Replaced successfully");
             }
-
             return BadRequest("invalid index");
         }
     }
