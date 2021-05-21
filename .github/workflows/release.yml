@@ -82,7 +82,7 @@ jobs:
                 ref: "tags/d${{env.VERSION}}"
             }
             
-            const getRefResponse
+            const getRefResponse = ''
             try
             {
               getRefResponse = await github.git.getRef(getRefRequest)
