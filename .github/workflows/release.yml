@@ -98,23 +98,7 @@ jobs:
             }catch(err)
             {
               core.info('Failed to retrieve tag')
-            }
-            
-            if (getRefResponse != 200)
-            {            
-                const createRefRequest = {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ref: "refs/tags/d${{ env.VERSION }}",
-                  sha: context.sha
-                }
-                try
-                {
-                    github.git.createRef(createRefRequest)        
-                }catch(err){
-                    core.setFailed('Request failed with error ${err}')
-                }
-            }  
+            } 
   
   deploy-staging:
     environment: staging
