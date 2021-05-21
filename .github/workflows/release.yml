@@ -83,7 +83,6 @@ jobs:
             }
             
             const getRefResponse = ''
-            const deleteRefResponse = ''
             try
             {
               getRefResponse = await github.git.getRef(getRefRequest)
@@ -104,25 +103,23 @@ jobs:
                     deleteRefResponse = await github.git.deleteRef(deleteTagRequest)
                 }catch(err)
                 {
-                    core.info('Could not delete existing tag. Delete it manually and try again')
+                    core.info(`Could not delete existing tag. Delete it manually and try again ${err}`)
+                    core.setFailed(`Could not delete existing tag. Delete it manually and try again ${err}`)
                 }
             }
-            if(deleteRefResponse.status == 204)
+            core.info('Tag not found. Creating a new tag')
+            const createRefRequest = {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: "refs/tags/d${{ env.VERSION }}",
+                sha: context.sha
+            }
+            try{
+                await github.git.createRef(createRefRequest)        
+                core.info('Tag created successfully');
+            }catch(err)
             {
-                core.info('Tag not found. Creating a new tag')
-                const createRefRequest = {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    ref: "refs/tags/d${{ env.VERSION }}",
-                    sha: context.sha
-                }
-                try{
-                    await github.git.createRef(createRefRequest)        
-                    core.info('Tag created successfully');
-                }catch(err)
-                {
-                  core.info('Failed to create tag')
-                }
+                core.info('Failed to create tag')
             }            
   
   deploy-staging:
