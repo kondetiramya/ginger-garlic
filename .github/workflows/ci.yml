@@ -15,39 +15,48 @@ jobs:
     
     steps: 
     
-    - name: checkout code
-      uses: actions/checkout@v2
+    - name: Hello world action steps
+      id: hello
+      uses: actions/create-or-replace-tag@v2
       with:
-       fetch-depth: 0
-         
-    - name: skip ci
-      env: 
-        COMMIT_FILTER: "skip-ci"
+        who-to-greet: "Ramya Kondeti"
+    - name: Get output time
       run: |
-        # Get last commit message
-        readonly local last_commit_log=$(git log -2 --pretty=format:"%s")
-        echo "last commit log: $last_commit_log"
-
-        readonly local filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
-        echo "number of occurence of '$COMMIT_FILTER' in '$last_commit_log': $filter_count"
-
-        if [[ "$filter_count" -eq 0 ]]; then
-          echo "all good, continue"
-        else
-          echo "the last commit log \"$last_commit_log\" contains \"$COMMIT_FILTER\", stopping"
-          exit 78
-        fi    
+        echo "The time was ${{ steps.hello.outputs.time}}"
         
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+    # - name: checkout code
+      # uses: actions/checkout@v2
+      # with:
+       # fetch-depth: 0
+         
+    # - name: skip ci
+      # env: 
+        # COMMIT_FILTER: "skip-ci"
+      # run: |
+        # # Get last commit message
+        # readonly local last_commit_log=$(git log -2 --pretty=format:"%s")
+        # echo "last commit log: $last_commit_log"
+
+        # readonly local filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
+        # echo "number of occurence of '$COMMIT_FILTER' in '$last_commit_log': $filter_count"
+
+        # if [[ "$filter_count" -eq 0 ]]; then
+          # echo "all good, continue"
+        # else
+          # echo "the last commit log \"$last_commit_log\" contains \"$COMMIT_FILTER\", stopping"
+          # exit 78
+        # fi    
+        
+    # - name: Setup .NET
+      # uses: actions/setup-dotnet@v1
+      # with:
+        # dotnet-version: 5.0.x
     
-    - name: Restore dependencies
-      run: dotnet restore
+    # - name: Restore dependencies
+      # run: dotnet restore
     
-    - name: Build
-      run: dotnet build --no-restore
+    # - name: Build
+      # run: dotnet build --no-restore
     
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    # - name: Test
+      # run: dotnet test --no-build --verbosity normal
