@@ -15,14 +15,12 @@ jobs:
     
     steps: 
     
-    - name: Hello world action steps
-      id: hello
+    - name: Create or replace tag
+      id: create-tag
       uses: kondetiramya/create-or-replace-tag@v1
       with:
-        who-to-greet: "Ramya Kondeti"
-    - name: Get output time
-      run: |
-        echo "The time was ${{ steps.hello.outputs.time}}"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: 'd3.10.18'
         
     # - name: checkout code
       # uses: actions/checkout@v2
