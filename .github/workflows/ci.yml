@@ -17,7 +17,7 @@ jobs:
     
     - name: Hello world action steps
       id: hello
-      uses: actions/create-or-replace-tag@v2
+      uses: kondetiramya/create-or-replace-tag@v2
       with:
         who-to-greet: "Ramya Kondeti"
     - name: Get output time
