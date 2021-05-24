@@ -20,7 +20,7 @@ jobs:
       uses: kondetiramya/create-or-replace-tag@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag: 'd3.10.18'
+        tag-name: 'd3.10.18'
         
     # - name: checkout code
       # uses: actions/checkout@v2
