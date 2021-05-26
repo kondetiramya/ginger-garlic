@@ -45,82 +45,92 @@ jobs:
         configFilePath: ./gitversion.yaml
         updateAssemblyInfo: true
     
-    # - name: Login to GitHub Container Registry
-      # env:
-        # VERSION: steps.gitversion.outputs.nuGetVersionV2
-      # uses: docker/login-action@v1
-      # with:
-        # registry: ${{ env.GHCR_ROOT }}
-        # username: ${{ github.actor }}
-        # password: ${{ secrets.GITHUB_TOKEN }}
+    - name: login to github container registry
+      env:
+        version: steps.gitversion.outputs.nugetversionv2
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ env.ghcr_root }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.github_token }}
     
-    # - name: Build tagged docker image
-      # env: 
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # run: |
-        # echo Building docker image with version: $VERSION
-        # docker build . --file Dockerfile -t "${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION"
+    - name: build tagged docker image
+      env: 
+        version: ${{ steps.gitversion.outputs.nugetversionv2 }}
+      run: |
+        echo building docker image with version: $version
+        docker build . --file dockerfile -t "${{ env.ghcr }}/${{ env.image_name }}:$version"
     
-    # - name: Push tagged docker image to GHCR
-      # env:
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # run: |
-        # echo Pushing docker image with version: $VERSION
-        # docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
+    - name: push tagged docker image to ghcr
+      env:
+        version: ${{ steps.gitversion.outputs.nugetversionv2 }}
+      run: |
+        echo pushing docker image with version: $version
+        docker push ${{ env.ghcr }}/${{ env.image_name }}:$version
     
     - name: Tag the commit
-      if: ${{ success() }}
-      env:
-        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      uses: actions/github-script@v3
+      id: create-tag
+      uses: kondetiramya/create-or-replace-tag@v1
       with:
-        script: |
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag-name: 'd${{ steps.gitversion.outputs.nugetversionv2 }}'
+     
+    - name: Print tag url
+      run: echo ${{ steps.create-tag.outputs.url }}
+    
+    # - name: Tag the commit
+      # if: ${{ success() }}
+      # env:
+        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      # uses: actions/github-script@v3
+      # with:
+        # script: |
             
-            const getRefRequest = {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: "tags/d${{env.VERSION}}"
-            }
+            # const getRefRequest = {
+                # owner: context.repo.owner,
+                # repo: context.repo.repo,
+                # ref: "tags/d${{env.VERSION}}"
+            # }
             
-            var getRefResponse = ''
-            try
-            {
-              getRefResponse = await github.git.getRef(getRefRequest)
-              core.info('Tag found')
-            }catch(err)
-            {
-                core.info(`Could not find tag ${err}`)
-            }
-            if (getRefResponse.status == 200)
-            {
-                core.info('Tag already exists. Deleting existing tag')
-                const deleteTagRequest = {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    ref: "tags/d${{env.VERSION}}"
-                }
-                try{
-                    deleteRefResponse = await github.git.deleteRef(deleteTagRequest)
-                }catch(err)
-                {
-                    core.info(`Could not delete existing tag. Delete it manually and try again ${err}`)
-                    core.setFailed(`Could not delete existing tag. Delete it manually and try again ${err}`)
-                }
-            }
-            core.info('Tag not found. Creating a new tag')
-            const createRefRequest = {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: "refs/tags/d${{ env.VERSION }}",
-                sha: context.sha
-            }
-            try{
-                await github.git.createRef(createRefRequest)        
-                core.info('Tag created successfully');
-            }catch(err)
-            {
-                core.info(`Failed to create tag ${err}`)
-            }            
+            # var getRefResponse = ''
+            # try
+            # {
+              # getRefResponse = await github.git.getRef(getRefRequest)
+              # core.info('Tag found')
+            # }catch(err)
+            # {
+                # core.info(`Could not find tag ${err}`)
+            # }
+            # if (getRefResponse.status == 200)
+            # {
+                # core.info('Tag already exists. Deleting existing tag')
+                # const deleteTagRequest = {
+                    # owner: context.repo.owner,
+                    # repo: context.repo.repo,
+                    # ref: "tags/d${{env.VERSION}}"
+                # }
+                # try{
+                    # deleteRefResponse = await github.git.deleteRef(deleteTagRequest)
+                # }catch(err)
+                # {
+                    # core.info(`Could not delete existing tag. Delete it manually and try again ${err}`)
+                    # core.setFailed(`Could not delete existing tag. Delete it manually and try again ${err}`)
+                # }
+            # }
+            # core.info('Tag not found. Creating a new tag')
+            # const createRefRequest = {
+                # owner: context.repo.owner,
+                # repo: context.repo.repo,
+                # ref: "refs/tags/d${{ env.VERSION }}",
+                # sha: context.sha
+            # }
+            # try{
+                # await github.git.createRef(createRefRequest)        
+                # core.info('Tag created successfully');
+            # }catch(err)
+            # {
+                # core.info(`Failed to create tag ${err}`)
+            # }            
   
   deploy-staging:
     environment: staging
@@ -222,35 +232,11 @@ jobs:
         # body: |
             # ${{ steps.changelog.outputs.changelog }}
     - name: Tag the commit
-      if: ${{ success() }}
-      env:
-        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      uses: actions/github-script@v3
+      id: create-tag
+      uses: kondetiramya/create-or-replace-tag@v1
       with:
-        script: |
-            #check if the tag exists
-            const getRefRequest = {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: "refs/tags/s${{env.VERSION}}"
-            }
-            const getRefResponse = await github.git.getRef(getRefRequest)
-            
-            if (getRefResponse != 200)
-            {            
-                const createRefRequest = {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ref: "refs/tags/s${{ env.VERSION }}",
-                  sha: context.sha
-                }
-                try
-                {
-                    github.git.createRef(createRefRequest)        
-                }catch(err){
-                    core.setFailed('Request failed with error ${err}')
-                }
-            }
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag-name: 's${{ steps.gitversion.outputs.nugetversionv2 }}'
   
   deploy-prod:
     environment: prod
