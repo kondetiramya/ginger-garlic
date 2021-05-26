@@ -21,6 +21,10 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag-name: 'd3.10.18'
+    
+    - name: display output
+      run: |
+        echo ${{ steps.create-tag.outputs.url }}
         
     # - name: checkout code
       # uses: actions/checkout@v2
