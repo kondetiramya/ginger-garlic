@@ -52,7 +52,7 @@ jobs:
       with:
         registry: ${{ env.ghcr_root }}
         username: ${{ github.actor }}
-        password: ${{ secrets.github_token }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     
     - name: build tagged docker image
       env: 
