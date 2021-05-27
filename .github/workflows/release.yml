@@ -76,7 +76,7 @@ jobs:
         tag-name: 'd${{ steps.gitversion.outputs.nugetversionv2 }}'
      
     - name: Print tag url
-      run: echo ${{ steps.create-tag.outputs.url }}
+      run: echo ${{ steps.create-tag.outputs.ref }}
     
     # - name: Tag the commit
       # if: ${{ success() }}
