@@ -73,7 +73,7 @@ jobs:
       uses: kondetiramya/create-or-replace-tag@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag-name: 'd${{ steps.gitversion.outputs.nugetversionv2 }}'
+        tag-name: 'dev'
      
     - name: Print tag url
       run: echo ${{ steps.create-tag.outputs.ref }}
@@ -171,28 +171,28 @@ jobs:
         configFilePath: ./gitversion.yaml
         updateAssemblyInfo: true
     
-    - name: Login to GitHub Container Registry
-      env:
-        VERSION: steps.gitversion.outputs.nuGetVersionV2
-      uses: docker/login-action@v1
-      with:
-        registry: ${{ env.GHCR_ROOT }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Login to GitHub Container Registry
+      # env:
+        # VERSION: steps.gitversion.outputs.nuGetVersionV2
+      # uses: docker/login-action@v1
+      # with:
+        # registry: ${{ env.GHCR_ROOT }}
+        # username: ${{ github.actor }}
+        # password: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Build tagged docker image
-      env: 
-        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      run: |
-        echo Building docker image with version: $VERSION
-        docker build . --file Dockerfile -t "${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION"
+    # - name: Build tagged docker image
+      # env: 
+        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      # run: |
+        # echo Building docker image with version: $VERSION
+        # docker build . --file Dockerfile -t "${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION"
     
-    - name: Push tagged docker image to GHCR
-      env:
-        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      run: |
-        echo Pushing docker image with version: $VERSION
-        docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
+    # - name: Push tagged docker image to GHCR
+      # env:
+        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      # run: |
+        # echo Pushing docker image with version: $VERSION
+        # docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
         
     # - name: Generate changelog
       # uses: scottbrenner/generate-changelog-action@master
@@ -236,7 +236,7 @@ jobs:
       uses: kondetiramya/create-or-replace-tag@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag-name: 's${{ steps.gitversion.outputs.nugetversionv2 }}'
+        tag-name: 'staging'
   
   deploy-prod:
     environment: prod
@@ -277,28 +277,28 @@ jobs:
         configFilePath: ./gitversion.yaml
         updateAssemblyInfo: true
     
-    - name: Login to GitHub Container Registry
-      env:
-        VERSION: steps.gitversion.outputs.nuGetVersionV2
-      uses: docker/login-action@v1
-      with:
-        registry: ${{ env.GHCR_ROOT }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Login to GitHub Container Registry
+      # env:
+        # VERSION: steps.gitversion.outputs.nuGetVersionV2
+      # uses: docker/login-action@v1
+      # with:
+        # registry: ${{ env.GHCR_ROOT }}
+        # username: ${{ github.actor }}
+        # password: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Build tagged docker image
-      env: 
-        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      run: |
-        echo Building docker image with version: $VERSION
-        docker build . --file Dockerfile -t "${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION"
+    # - name: Build tagged docker image
+      # env: 
+        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      # run: |
+        # echo Building docker image with version: $VERSION
+        # docker build . --file Dockerfile -t "${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION"
     
-    - name: Push tagged docker image to GHCR
-      env:
-        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      run: |
-        echo Pushing docker image with version: $VERSION
-        docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
+    # - name: Push tagged docker image to GHCR
+      # env:
+        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      # run: |
+        # echo Pushing docker image with version: $VERSION
+        # docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
         
     # - name: Publish release
       # if: ${{ success() }}
@@ -307,29 +307,36 @@ jobs:
       # uses: eregon/publish-release@v1
       # with:
         # release_id: ${{ needs.deploy-staging.outputs.releaseId }}
-    - name: Get latest tag name
-      id: latest_tag
-      uses: "WyriHaximus/github-action-get-previous-tag@v1"
+    # - name: Get latest tag name
+      # id: latest_tag
+      # uses: "WyriHaximus/github-action-get-previous-tag@v1"
     
-    - name: Generate changelog
-      if: ${{ success() }}
-      uses: scottbrenner/generate-changelog-action@master
-      id: changelog
-      with:
-        package-dir: ./package.json
-        from-tag: ${{ steps.latest_tag.options.tag }}
-        to-tag: HEAD
-        exclude: ci,build,test,docs,chore
+    # - name: Generate changelog
+      # if: ${{ success() }}
+      # uses: scottbrenner/generate-changelog-action@master
+      # id: changelog
+      # with:
+        # package-dir: ./package.json
+        # from-tag: ${{ steps.latest_tag.options.tag }}
+        # to-tag: HEAD
+        # exclude: ci,build,test,docs,chore
         
-    - name: Create Release
-      if: ${{ success() }}
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+    # - name: Create Release
+      # if: ${{ success() }}
+      # uses: actions/create-release@v1
+      # env:
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      # with:
+        # tag_name: p${{ env.VERSION }}
+        # release_name: Release V ${{ env.VERSION }}
+        # draft: false
+        # body: |
+            # ${{ steps.changelog.outputs.changelog }}
+            
+    - name: Tag the commit
+      id: create-tag
+      uses: kondetiramya/create-or-replace-tag@v1
       with:
-        tag_name: p${{ env.VERSION }}
-        release_name: Release V ${{ env.VERSION }}
-        draft: false
-        body: |
-            ${{ steps.changelog.outputs.changelog }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag-name: 'production'
