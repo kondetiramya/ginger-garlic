@@ -15,6 +15,17 @@ jobs:
     
     steps: 
     
+    # - name: create or replace tag
+      # id: create-tag
+      # uses: kondetiramya/create-or-replace-tag@v1
+      # with:
+        # token: ${{ secrets.github_token }}
+        # tag-name: 'd3.10.18'
+    
+    # - name: display output
+      # run: |
+        # echo ${{ steps.create-tag.outputs.url }}
+        
     - name: checkout code
       uses: actions/checkout@v2
       with:
