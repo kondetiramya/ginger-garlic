@@ -70,19 +70,19 @@ jobs:
     
     - uses: actions/checkout@v2
       with:
-        repository: kondetiramya/create-or-replace-tag
+        repository: HylandSoftware/create-or-update-tag-action
         ref: v1
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        path: ./.github/actions/create-or-replace-tag
+        path: ./.github/actions/create-or-update-tag
 
     - name: Tag the commit
       id: create-tag
-      uses: ./.github/actions/create-or-replace-tag
+      uses: ./.github/actions/create-or-update-tag
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         tag-name: 'dev'
      
-    - name: Print tag url
+    - name: Print tag ref
       run: echo ${{ steps.create-tag.outputs.ref }}
     
     # - name: Tag the commit
@@ -240,14 +240,14 @@ jobs:
             # ${{ steps.changelog.outputs.changelog }}
     - uses: actions/checkout@v2
       with:
-        repository: kondetiramya/create-or-replace-tag
+        repository: HylandSoftware/create-or-update-tag-action
         ref: v1
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        path: ./.github/actions/create-or-replace-tag
+        path: ./.github/actions/create-or-update-tag
 
     - name: Tag the commit
       id: create-tag
-      uses: ./.github/actions/create-or-replace-tag
+      uses: ./.github/actions/create-or-update-tag
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         tag-name: 'staging'
@@ -349,14 +349,14 @@ jobs:
             
     - uses: actions/checkout@v2
       with:
-        repository: kondetiramya/create-or-replace-tag
+        repository: HylandSoftware/create-or-update-tag-action
         ref: v1
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         path: ./.github/actions/create-or-replace-tag
 
     - name: Tag the commit
       id: create-tag
-      uses: ./.github/actions/create-or-replace-tag
+      uses: ./.github/actions/create-or-update-tag
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         tag-name: 'production'
