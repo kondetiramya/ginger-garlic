@@ -53,7 +53,9 @@ namespace gg_webapi.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+
             return WeatherForecast.OrderBy(m => m.Date).ToList();
+
         }
 
         [HttpGet("{id}")]
