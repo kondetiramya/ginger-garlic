@@ -72,14 +72,14 @@ jobs:
       with:
         repository: kondetiramya/create-or-replace-tag
         ref: v1
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
         path: ./.github/actions/create-or-replace-tag
 
     - name: Tag the commit
       id: create-tag
       uses: ./.github/actions/create-or-replace-tag
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
         tag-name: 'dev'
      
     - name: Print tag url
@@ -242,14 +242,14 @@ jobs:
       with:
         repository: kondetiramya/create-or-replace-tag
         ref: v1
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
         path: ./.github/actions/create-or-replace-tag
 
     - name: Tag the commit
       id: create-tag
       uses: ./.github/actions/create-or-replace-tag
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
         tag-name: 'staging'
   
   deploy-prod:
@@ -351,12 +351,12 @@ jobs:
       with:
         repository: kondetiramya/create-or-replace-tag
         ref: v1
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
         path: ./.github/actions/create-or-replace-tag
 
     - name: Tag the commit
       id: create-tag
       uses: ./.github/actions/create-or-replace-tag
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
         tag-name: 'production'
