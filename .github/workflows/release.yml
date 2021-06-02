@@ -68,9 +68,16 @@ jobs:
         # echo pushing docker image with version: $version
         # docker push ${{ env.ghcr }}/${{ env.image_name }}:$version
     
+    - uses: actions/checkout@v2
+      with:
+        repository: kondetiramya/create-or-replace-tag
+        ref: v1
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: ./.github/actions/create-or-replace-tag
+
     - name: Tag the commit
       id: create-tag
-      uses: kondetiramya/create-or-replace-tag@v1
+      uses: ./.github/actions/create-or-replace-tag
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag-name: 'dev'
@@ -231,9 +238,16 @@ jobs:
         # prerelease: false
         # body: |
             # ${{ steps.changelog.outputs.changelog }}
+    - uses: actions/checkout@v2
+      with:
+        repository: kondetiramya/create-or-replace-tag
+        ref: v1
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: ./.github/actions/create-or-replace-tag
+
     - name: Tag the commit
       id: create-tag
-      uses: kondetiramya/create-or-replace-tag@v1
+      uses: ./.github/actions/create-or-replace-tag
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag-name: 'staging'
@@ -330,13 +344,19 @@ jobs:
       # with:
         # tag_name: p${{ env.VERSION }}
         # release_name: Release V ${{ env.VERSION }}
-        # draft: false
         # body: |
             # ${{ steps.changelog.outputs.changelog }}
             
+    - uses: actions/checkout@v2
+      with:
+        repository: kondetiramya/create-or-replace-tag
+        ref: v1
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: ./.github/actions/create-or-replace-tag
+
     - name: Tag the commit
       id: create-tag
-      uses: kondetiramya/create-or-replace-tag@v1
+      uses: ./.github/actions/create-or-replace-tag
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag-name: 'production'
