@@ -72,17 +72,6 @@ namespace gg_webapi.Controllers
             return Ok("Added successfully");
         }
 
-        [HttpDelete]
-        public IActionResult DeleteFirst()
-        {
-            if (WeatherForecast.Count > 0)
-            {
-                WeatherForecast.OrderBy(m => m.Date).ToList().RemoveAt(0);
-                return Ok("First item deleted successfully");
-            }
-            return BadRequest();
-        }
-
         [HttpPut(template: "{id}")]
         public IActionResult Put(int id, WeatherForecastInput input)
         {
