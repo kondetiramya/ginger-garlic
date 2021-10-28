@@ -63,6 +63,12 @@ namespace gg_webapi.Controllers
         {
             return WeatherForecast.ElementAt(id - 1);
         }
+        [HttpDelete]
+        public IActionResult DeleteAll()
+        {
+            WeatherForecast.Clear();
+            return Ok("Success");
+        }
 
         [HttpPost]
         public IActionResult Post([FromBody] WeatherForecastInput input)
