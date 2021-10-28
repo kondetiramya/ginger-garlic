@@ -48,28 +48,28 @@ jobs:
         configFilePath: ./gitversion.yaml
         updateAssemblyInfo: true
     
-    - name: login to github container registry
-      env:
-        version: steps.gitversion.outputs.nugetversionv2
-      uses: docker/login-action@v1
-      with:
-        registry: ${{ env.ghcr_root }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+    # - name: login to github container registry
+      # env:
+        # version: steps.gitversion.outputs.nugetversionv2
+      # uses: docker/login-action@v1
+      # with:
+        # registry: ${{ env.ghcr_root }}
+        # username: ${{ github.actor }}
+        # password: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: build tagged docker image
-      env: 
-        version: ${{ steps.gitversion.outputs.nugetversionv2 }}
-      run: |
-        echo building docker image with version: $version
-        docker build . --file dockerfile -t "${{ env.ghcr }}/${{ env.image_name }}:$version"
+    # - name: build tagged docker image
+      # env: 
+        # version: ${{ steps.gitversion.outputs.nugetversionv2 }}
+      # run: |
+        # echo building docker image with version: $version
+        # docker build . --file dockerfile -t "${{ env.ghcr }}/${{ env.image_name }}:$version"
     
-    - name: push tagged docker image to ghcr
-      env:
-        version: ${{ steps.gitversion.outputs.nugetversionv2 }}
-      run: |
-        echo pushing docker image with version: $version
-        docker push ${{ env.ghcr }}/${{ env.image_name }}:$version
+    # - name: push tagged docker image to ghcr
+      # env:
+        # version: ${{ steps.gitversion.outputs.nugetversionv2 }}
+      # run: |
+        # echo pushing docker image with version: $version
+        # docker push ${{ env.ghcr }}/${{ env.image_name }}:$version
     
     - uses: actions/checkout@v2
       with:
