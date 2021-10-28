@@ -96,11 +96,5 @@ namespace gg_webapi.Controllers
             }
             return BadRequest("invalid index");
         }
-
-        [HttpGet(template:"/getdata")]
-        public IActionResult GetData()
-        {
-            return Ok("success");
-        }
     }
 }
