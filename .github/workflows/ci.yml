@@ -62,3 +62,6 @@ jobs:
     
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    
+    - name: Job Status
+      run: echo "Job Status is ${{ job.status }}"
