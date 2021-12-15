@@ -62,3 +62,13 @@ jobs:
     
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
+    - name: MS Teams Deploy Card
+      uses: toko-bifrost/ms-teams-deploy-card@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        card-layout-exit: cozy
+        show-on-start: false
+        show-on-failure: true
+

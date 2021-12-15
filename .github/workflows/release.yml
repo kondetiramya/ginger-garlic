@@ -87,6 +87,16 @@ jobs:
      
     - name: Print tag ref
       run: echo ${{ steps.create-tag.outputs.ref }}
+
+    - name: MS Teams Deploy Card
+      uses: toko-bifrost/ms-teams-deploy-card@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        card-layout-exit: cozy
+        show-on-start: false
+        show-on-failure: true
+
     
     # - name: Tag the commit
       # if: ${{ success() }}
@@ -257,6 +267,14 @@ jobs:
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         tag-name: 'staging'
+
+    - name: MS Teams Deploy Card
+      uses: toko-bifrost/ms-teams-deploy-card@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        card-layout-exit: cozy
+        show-on-start: false
   
   deploy-prod:
     environment: prod
@@ -369,3 +387,12 @@ jobs:
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         tag-name: 'production'
+
+    - name: MS Teams Deploy Card
+      uses: toko-bifrost/ms-teams-deploy-card@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        card-layout-exit: cozy
+        show-on-start: false
+
