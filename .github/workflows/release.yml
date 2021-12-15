@@ -92,7 +92,7 @@ jobs:
       uses: toko-bifrost/ms-teams-deploy-card@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        webhook-uri: https://hylandsw.webhook.office.com/webhookb2/af2a58c9-4ca7-441c-8c5e-206984bcdeab@8ca5db88-a5ab-48f7-a5e0-4ce50935f807/IncomingWebhook/4aab4acad4484c2b8ef8f7d39f2a8d19/b0f7dabf-14c9-48ff-9705-f206d3fbc789
         card-layout-exit: cozy
         show-on-start: false
         show-on-failure: true
@@ -272,7 +272,7 @@ jobs:
       uses: toko-bifrost/ms-teams-deploy-card@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        webhook-uri: https://hylandsw.webhook.office.com/webhookb2/af2a58c9-4ca7-441c-8c5e-206984bcdeab@8ca5db88-a5ab-48f7-a5e0-4ce50935f807/IncomingWebhook/4aab4acad4484c2b8ef8f7d39f2a8d19/b0f7dabf-14c9-48ff-9705-f206d3fbc789
         card-layout-exit: cozy
         show-on-start: false
   
@@ -392,7 +392,7 @@ jobs:
       uses: toko-bifrost/ms-teams-deploy-card@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        webhook-uri: https://hylandsw.webhook.office.com/webhookb2/af2a58c9-4ca7-441c-8c5e-206984bcdeab@8ca5db88-a5ab-48f7-a5e0-4ce50935f807/IncomingWebhook/4aab4acad4484c2b8ef8f7d39f2a8d19/b0f7dabf-14c9-48ff-9705-f206d3fbc789
         card-layout-exit: cozy
         show-on-start: false
 
