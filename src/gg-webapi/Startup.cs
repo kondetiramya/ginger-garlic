@@ -17,7 +17,8 @@ namespace gg_webapi
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        //this comment added foe testing
+        //this comment added foe testing.
+        //adding more comment
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
