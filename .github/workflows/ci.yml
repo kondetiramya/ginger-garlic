@@ -1,8 +1,9 @@
-name: CI Pipeline
+name: CIPipeline
 
 on:
   pull_request:
     branches: [ main ]
+  workflow_call:
 env:
   IMAGE_NAME: ginger-garlic
   GHCR_ROOT: ghcr.io
@@ -10,22 +11,8 @@ env:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-    
-    steps: 
-    
-    # - name: create or replace tag
-      # id: create-tag
-      # uses: kondetiramya/create-or-replace-tag@v1
-      # with:
-        # token: ${{ secrets.github_token }}
-        # tag-name: 'd3.10.18'
-    
-    # - name: display output
-      # run: |
-        # echo ${{ steps.create-tag.outputs.url }}
-        
+    runs-on: ubuntu-latest    
+    steps:         
     - name: checkout code
       uses: actions/checkout@v2
       with:
@@ -62,13 +49,3 @@ jobs:
     
     - name: Test
       run: dotnet test --no-build --verbosity normal
-
-    - name: MS Teams Deploy Card
-      uses: toko-bifrost/ms-teams-deploy-card@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-        card-layout-exit: cozy
-        show-on-start: false
-        show-on-failure: true
-
