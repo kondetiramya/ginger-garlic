@@ -1,8 +1,9 @@
 name: CIPipeline2
 
 on:
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
+  schedule:
+    - cron: '*/3 * * * *'
 env:
   IMAGE_NAME: ginger-garlic
   GHCR_ROOT: ghcr.io
