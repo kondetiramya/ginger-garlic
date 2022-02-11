@@ -4,13 +4,17 @@ on:
   workflow_call:
     inputs:
         client_password:
-            required: true
-            type: string
+          required: true
+          type: string
+        environment:
+          required: true
+          type: string
 
 env:
   IMAGE_NAME: ginger-garlic
   GHCR_ROOT: ghcr.io
   GHCR: ghcr.io/kondetiramya
+  ENVIRONMENT_NAME: ${{inputs.environment}}
 
 jobs:
   build:
@@ -54,4 +58,4 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     
     - name: Print secret
-      run: echo ${{ inputs.client_password }} ?? 'current'
+      run: echo password:${{ inputs.client_password }}   env:$${{env.ENVIRONMENT_NAME}}
