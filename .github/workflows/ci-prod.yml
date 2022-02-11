@@ -10,7 +10,7 @@ env:
 
 jobs:
   call-workflow:
-    uses: /.github/workflows/ci.yml
+    uses: ./.github/workflows/ci.yml
     secrets:
         client_password: "some value"
         
