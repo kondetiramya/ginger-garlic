@@ -6,9 +6,10 @@ on:
     - cron: '*/1 * * * *'
     
   workflow_call:
-    secrets:
+    inputs:
         client_password:
             required: true
+            type: string
 
 env:
   IMAGE_NAME: ginger-garlic
@@ -57,4 +58,4 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     
     - name: Print secret
-      run: echo ${{ secrets.client_password }}
+      run: echo ${{ inputs.client_password }} ?? 'current'
