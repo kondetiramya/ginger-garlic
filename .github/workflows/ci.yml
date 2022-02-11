@@ -1,10 +1,6 @@
 name: CIPipeline
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '*/1 * * * *'
-    
+on:    
   workflow_call:
     inputs:
         client_password:
