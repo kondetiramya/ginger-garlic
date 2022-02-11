@@ -1,9 +1,10 @@
 name: CIPipeline
 
 on:
-  pull_request:
-    branches: [ main ]
   workflow_call:
+    secrets:
+        client_password:
+            required: true
 
 env:
   IMAGE_NAME: ginger-garlic
@@ -50,3 +51,6 @@ jobs:
     
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    
+    - name: Print secret
+      run: echo ${{ secrets.client_password }}
