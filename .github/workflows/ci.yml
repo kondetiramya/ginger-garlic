@@ -3,7 +3,7 @@ name: CIPipeline
 on:
   workflow_dispatch:
   schedule:
-    - cron: '1 * * * *'
+    - cron: '*/1 * * * *'
     
   workflow_call:
     secrets:
