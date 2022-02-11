@@ -1,6 +1,8 @@
 name: CIPipeline
 
 on:
+  pull_request:
+    branches: [ main ]
   workflow_call:
     secrets:
         client_password:
