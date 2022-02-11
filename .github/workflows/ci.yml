@@ -1,8 +1,10 @@
 name: CIPipeline
 
 on:
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
+  schedule:
+    - cron: '1 * * * *'
+    
   workflow_call:
     secrets:
         client_password:
