@@ -24,7 +24,7 @@ jobs:
         environment: ${{inputs.environment}}
         runs-on: ubuntu-latest
         concurrency:
-            group: release-${{inputs.environment}}
+            group: "release-${{inputs.environment}}"
             cancel-in-progress: ${{inputs.concurrency}}
         steps:
         - uses: actions/checkout@v2
