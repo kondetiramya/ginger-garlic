@@ -51,13 +51,6 @@ jobs:
             useConfigFile: true
             configFilePath: ./gitversion.yaml
             updateAssemblyInfo: true
-        
-        - uses: actions/checkout@v2
-          with:
-            repository: HylandSoftware/create-or-update-tag-action
-            ref: v1
-            token: ${{ secrets.repo_access_token }}
-            path: ./.github/actions/create-or-update-tag
 
         - name: Tag the commit
           id: create-tag
