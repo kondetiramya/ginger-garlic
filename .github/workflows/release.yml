@@ -41,6 +41,7 @@ jobs:
     with:
         environment: Dev
         output1: ${{needs.build.step_output.output1}}
+        concurrency: false
     secrets:
         repo_access_token: ${{ secrets.REPO_ACCESS_TOKEN }}
   
@@ -48,6 +49,7 @@ jobs:
     uses: ./.github/workflows/deploy_template.yaml
     with:
         environment: Staging
+        concurrency: true
     secrets:
         repo_access_token: ${{ secrets.REPO_ACCESS_TOKEN }}
     needs:
@@ -62,5 +64,6 @@ jobs:
     uses: ./.github/workflows/deploy_template.yaml
     with:
         environment: Prod
+        concurrency: true
     secrets:
         repo_access_token: ${{ secrets.REPO_ACCESS_TOKEN }}
