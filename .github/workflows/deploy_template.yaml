@@ -6,7 +6,7 @@ on:
             required: true
             type: string
         output1:
-            required: true
+            required: false
             type: string
     secrets:
         repo_access_token:
