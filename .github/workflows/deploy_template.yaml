@@ -8,9 +8,6 @@ on:
         output1:
             required: true
             type: string
-        output2:
-            required: true
-            type: string
     secrets:
         repo_access_token:
             required: true
@@ -75,4 +72,3 @@ jobs:
         - name: Display outputs
           run: |
             echo ${{ inputs.output1 }}
-            echo ${{ inputs.output2 }}
