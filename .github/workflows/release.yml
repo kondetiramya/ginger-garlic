@@ -9,7 +9,7 @@ env:
   GHCR: ghcr.io/kondetiramya
 
 jobs:
-   build:
+  build:
     runs-on: ubuntu-latest    
     steps:         
     - name: checkout code
@@ -35,19 +35,17 @@ jobs:
       id: step_output
       run: |
         echo "::set-output name=output1::This is output1"
-        echo "::set-output name=output2::This is output2"
   deploy-dev:
     needs: build
-    uses: ./github/workflows/deploy_template.yaml
+    uses: ./.github/workflows/deploy_template.yaml
     with:
         environment: 'dev'
         output1: ${{needs.build.step_output.output1}}
-        output1: ${{needs.build.step_output.output2}}
     secrets:
         repo_access_token: ${{ secrets.REPO_ACCESS_TOKEN }}
   
   deploy-staging:
-    uses: ./github/workflows/deploy_template.yaml
+    uses: ./.github/workflows/deploy_template.yaml
     with:
         environment: 'staging'
     secrets:
@@ -61,7 +59,7 @@ jobs:
     - build
     - deploy-dev
     - deploy-staging
-    uses: ./github/workflows/deploy_template.yaml
+    uses: ./.github/workflows/deploy_template.yaml
     with:
         environment: 'prod'
     secrets:
