@@ -9,18 +9,14 @@ env:
   GHCR: ghcr.io/kondetiramya
 
 jobs:
-  deploy-dev:
-    environment: dev
-    runs-on: ubuntu-latest
-    concurrency: 
-        group: deploy-dev
-        cancel-in-progress: false
-
-    steps:
-    - uses: actions/checkout@v2
+   build:
+    runs-on: ubuntu-latest    
+    steps:         
+    - name: checkout code
+      uses: actions/checkout@v2
       with:
-        fetch-depth: 0
-    
+       fetch-depth: 0
+       
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -35,365 +31,38 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     
-    - name: Install Gitversion
-      uses: gittools/actions/gitversion/setup@v0.9.9
-      with:
-        versionSpec: '5.x'
-    
-    - name: Generate Version
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.9
-      with:
-        useConfigFile: true
-        configFilePath: ./gitversion.yaml
-        updateAssemblyInfo: true
-    
-    # - name: login to github container registry
-      # env:
-        # version: steps.gitversion.outputs.nugetversionv2
-      # uses: docker/login-action@v1
-      # with:
-        # registry: ${{ env.ghcr_root }}
-        # username: ${{ github.actor }}
-        # password: ${{ secrets.GITHUB_TOKEN }}
-    
-    # - name: build tagged docker image
-      # env: 
-        # version: ${{ steps.gitversion.outputs.nugetversionv2 }}
-      # run: |
-        # echo building docker image with version: $version
-        # docker build . --file dockerfile -t "${{ env.ghcr }}/${{ env.image_name }}:$version"
-    
-    # - name: push tagged docker image to ghcr
-      # env:
-        # version: ${{ steps.gitversion.outputs.nugetversionv2 }}
-      # run: |
-        # echo pushing docker image with version: $version
-        # docker push ${{ env.ghcr }}/${{ env.image_name }}:$version
-    
-    - uses: actions/checkout@v2
-      with:
-        repository: HylandSoftware/create-or-update-tag-action
-        ref: v1
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        path: ./.github/actions/create-or-update-tag
-
-    - name: Tag the commit
-      id: create-tag
-      uses: ./.github/actions/create-or-update-tag
-      with:
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        tag-name: 'dev'
-     
-    - name: Print tag ref
-      run: echo ${{ steps.create-tag.outputs.ref }}
-
-    - name: MS Teams Deploy Card
-      uses: toko-bifrost/ms-teams-deploy-card@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-        card-layout-exit: cozy
-        show-on-start: false
-        show-on-failure: true
-
-    
-    # - name: Tag the commit
-      # if: ${{ success() }}
-      # env:
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # uses: actions/github-script@v3
-      # with:
-        # script: |
-            
-            # const getRefRequest = {
-                # owner: context.repo.owner,
-                # repo: context.repo.repo,
-                # ref: "tags/d${{env.VERSION}}"
-            # }
-            
-            # var getRefResponse = ''
-            # try
-            # {
-              # getRefResponse = await github.git.getRef(getRefRequest)
-              # core.info('Tag found')
-            # }catch(err)
-            # {
-                # core.info(`Could not find tag ${err}`)
-            # }
-            # if (getRefResponse.status == 200)
-            # {
-                # core.info('Tag already exists. Deleting existing tag')
-                # const deleteTagRequest = {
-                    # owner: context.repo.owner,
-                    # repo: context.repo.repo,
-                    # ref: "tags/d${{env.VERSION}}"
-                # }
-                # try{
-                    # deleteRefResponse = await github.git.deleteRef(deleteTagRequest)
-                # }catch(err)
-                # {
-                    # core.info(`Could not delete existing tag. Delete it manually and try again ${err}`)
-                    # core.setFailed(`Could not delete existing tag. Delete it manually and try again ${err}`)
-                # }
-            # }
-            # core.info('Tag not found. Creating a new tag')
-            # const createRefRequest = {
-                # owner: context.repo.owner,
-                # repo: context.repo.repo,
-                # ref: "refs/tags/d${{ env.VERSION }}",
-                # sha: context.sha
-            # }
-            # try{
-                # await github.git.createRef(createRefRequest)        
-                # core.info('Tag created successfully');
-            # }catch(err)
-            # {
-                # core.info(`Failed to create tag ${err}`)
-            # }            
+    - name: Set outputs
+      id: step_output
+      run: |
+        echo ::set-output name=output1::"This is output1"
+        echo ::set-output name=output2::"This is output2"
+  deploy-dev:
+    needs: build
+    uses: ./github/workflows/deploy_template.yaml
+    with:
+        environment: 'dev'
+        output1: ${{needs.build.step_output.output1}}
+        output1: ${{needs.build.step_output.output2}}
+    secrets:
+        repo_access_token: ${{ secrets.REPO_ACCESS_TOKEN }}
   
   deploy-staging:
-    environment: staging
-    runs-on: ubuntu-latest
+    uses: ./github/workflows/deploy_template.yaml
+    with:
+        environment: 'staging'
+    secrets:
+        repo_access_token: ${{ secrets.REPO_ACCESS_TOKEN }}
     needs:
+    - build
     - deploy-dev
-    outputs:
-        releaseId: ${{ steps.create-pre-release.outputs.id}}
-    concurrency: 
-        group: deploy-staging
-        cancel-in-progress: true
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    
-    - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Build
-      run: dotnet build --no-restore
-    
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    
-    - name: Install Gitversion
-      uses: gittools/actions/gitversion/setup@v0.9.9
-      with:
-        versionSpec: '5.x'
-    
-    - name: Generate Version
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.9
-      with:
-        useConfigFile: true
-        configFilePath: ./gitversion.yaml
-        updateAssemblyInfo: true
-    
-    # - name: Login to GitHub Container Registry
-      # env:
-        # VERSION: steps.gitversion.outputs.nuGetVersionV2
-      # uses: docker/login-action@v1
-      # with:
-        # registry: ${{ env.GHCR_ROOT }}
-        # username: ${{ github.actor }}
-        # password: ${{ secrets.GITHUB_TOKEN }}
-    
-    # - name: Build tagged docker image
-      # env: 
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # run: |
-        # echo Building docker image with version: $VERSION
-        # docker build . --file Dockerfile -t "${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION"
-    
-    # - name: Push tagged docker image to GHCR
-      # env:
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # run: |
-        # echo Pushing docker image with version: $VERSION
-        # docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
-        
-    # - name: Generate changelog
-      # uses: scottbrenner/generate-changelog-action@master
-      # id: changelog
-      # with:
-        # package-dir: ./package.json
-        # from-tag: ${{ steps.latest_tag.options.tag }}
-        # to-tag: HEAD
-        # exclude: ci,build,test,docs,chore
-    
-    # - name: Create pre-release
-      # id: create-pre-release
-      # if: ${{ success() }}
-      # uses: ncipollo/release-action@v1
-      # env:
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # with:
-        # token: ${{ secrets.GITHUB_TOKEN }}
-        # tag: ${{ env.VERSION }}
-        # name: Release V ${{ env.VERSION }}
-        # draft: true
-        # prerelease: false
-        # body: |
-            # ${{ steps.changelog.outputs.changelog }}
-    # - name: Create pre-release
-      # id: create-pre-release
-      # if: ${{ success() && env.isMain == ''}}
-      # uses: actions/create-release@v1
-      # env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # with:
-        # tag_name: ${{ env.VERSION }}
-        # release_name: Release V ${{ env.VERSION }}
-        # draft: true
-        # prerelease: false
-        # body: |
-            # ${{ steps.changelog.outputs.changelog }}
-    - uses: actions/checkout@v2
-      with:
-        repository: HylandSoftware/create-or-update-tag-action
-        ref: v1
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        path: ./.github/actions/create-or-update-tag
-
-    - name: Tag the commit
-      id: create-tag
-      uses: ./.github/actions/create-or-update-tag
-      with:
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        tag-name: 'staging'
-
-    - name: MS Teams Deploy Card
-      uses: toko-bifrost/ms-teams-deploy-card@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-        card-layout-exit: cozy
-        show-on-start: false
-
   
   deploy-prod:
-    environment: prod
-    runs-on: ubuntu-latest
     needs:
+    - build
     - deploy-dev
     - deploy-staging
-    concurrency: 
-        group: deploy-prod
-        cancel-in-progress: true
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    
-    - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Build
-      run: dotnet build --no-restore
-    
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    
-    - name: Install Gitversion
-      uses: gittools/actions/gitversion/setup@v0.9.9
-      with:
-        versionSpec: '5.x'
-    
-    - name: Generate Version
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.9
-      with:
-        useConfigFile: true
-        configFilePath: ./gitversion.yaml
-        updateAssemblyInfo: true
-    
-    # - name: Login to GitHub Container Registry
-      # env:
-        # VERSION: steps.gitversion.outputs.nuGetVersionV2
-      # uses: docker/login-action@v1
-      # with:
-        # registry: ${{ env.GHCR_ROOT }}
-        # username: ${{ github.actor }}
-        # password: ${{ secrets.GITHUB_TOKEN }}
-    
-    # - name: Build tagged docker image
-      # env: 
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # run: |
-        # echo Building docker image with version: $VERSION
-        # docker build . --file Dockerfile -t "${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION"
-    
-    # - name: Push tagged docker image to GHCR
-      # env:
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # run: |
-        # echo Pushing docker image with version: $VERSION
-        # docker push ${{ env.GHCR }}/${{ env.IMAGE_NAME }}:$VERSION
-        
-    # - name: Publish release
-      # if: ${{ success() }}
-      # env:
-         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # uses: eregon/publish-release@v1
-      # with:
-        # release_id: ${{ needs.deploy-staging.outputs.releaseId }}
-    # - name: Get latest tag name
-      # id: latest_tag
-      # uses: "WyriHaximus/github-action-get-previous-tag@v1"
-    
-    # - name: Generate changelog
-      # if: ${{ success() }}
-      # uses: scottbrenner/generate-changelog-action@master
-      # id: changelog
-      # with:
-        # package-dir: ./package.json
-        # from-tag: ${{ steps.latest_tag.options.tag }}
-        # to-tag: HEAD
-        # exclude: ci,build,test,docs,chore
-        
-    # - name: Create Release
-      # if: ${{ success() }}
-      # uses: actions/create-release@v1
-      # env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # VERSION: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
-      # with:
-        # tag_name: p${{ env.VERSION }}
-        # release_name: Release V ${{ env.VERSION }}
-        # body: |
-            # ${{ steps.changelog.outputs.changelog }}
-            
-    - uses: actions/checkout@v2
-      with:
-        repository: HylandSoftware/create-or-update-tag-action
-        ref: v1
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        path: ./.github/actions/create-or-replace-tag
-
-    - name: Tag the commit
-      id: create-tag
-      uses: ./.github/actions/create-or-update-tag
-      with:
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        tag-name: 'production'
-
-    - name: MS Teams Deploy Card
-      uses: toko-bifrost/ms-teams-deploy-card@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-        card-layout-exit: cozy
-        show-on-start: false
-
+    uses: ./github/workflows/deploy_template.yaml
+    with:
+        environment: 'prod'
+    secrets:
+        repo_access_token: ${{ secrets.REPO_ACCESS_TOKEN }}
