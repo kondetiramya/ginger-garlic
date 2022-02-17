@@ -52,16 +52,6 @@ jobs:
             configFilePath: ./gitversion.yaml
             updateAssemblyInfo: true
 
-        - name: Tag the commit
-          id: create-tag
-          uses: ./.github/actions/create-or-update-tag
-          with:
-            token: ${{ secrets.repo_access_token }}
-            tag-name: 'dev'
-         
-        - name: Print tag ref
-          run: echo ${{ steps.create-tag.outputs.ref }}
-
         - name: Display outputs
           run: |
             echo ${{ inputs.output1 }}
